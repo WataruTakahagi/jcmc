@@ -77,4 +77,4 @@ class JCMC():
                 except IndexError:
                     apx = 'None.'
                 print(Color.CYAN+'Calling... '+Color.GREEN+spname+Color.END)
-        writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
+                writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
