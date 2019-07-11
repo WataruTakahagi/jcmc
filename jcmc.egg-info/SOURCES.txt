@@ -1,7 +1,0 @@
-README.md
-jcmc.py
-setup.py
-jcmc.egg-info/PKG-INFO
-jcmc.egg-info/SOURCES.txt
-jcmc.egg-info/dependency_links.txt
-jcmc.egg-info/top_level.txt
