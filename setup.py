@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(
-    name='jcmc2csv',
+    name='jcmc',
     version='0.1.2',
     author='Wataru Takahagi',
     author_email='watarut@eqchem.s.u-tokyo.ac.jp',
