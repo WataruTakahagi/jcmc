@@ -59,7 +59,7 @@ class JCMC:
             k5 = 'Temperature'
             k6 = 'Information'
             filecheck = 0
-            with open('output.csv', 'r', encoding='shift_jis') as c:
+            with open(self.oname, 'r', encoding='shift_jis') as c:
                 if len([i for i in c.readlines()]) > 0:
                     filecheck = 1
             fieldnames = [k1,k2,k3,k4,k5,k6]
