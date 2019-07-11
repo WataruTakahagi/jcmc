@@ -7,7 +7,7 @@
 解析ファイルを作成し、jcmcをインポートして用います。
 ```python
 from jcmc import JCMC
-JCMC = JCMC()
+JCMC = JCMC('20190711.csv') #出力ファイル名を決めておきます
 JCMC.export('hydrothermal')
 JCMC.export('hot,spring') #複数キーワードはカンマで区切る
 ```
