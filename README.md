@@ -12,7 +12,7 @@ JCMC.export('hydrothermal')
 JCMC.export('hot,spring') #複数キーワードはカンマで区切る
 ```
 #### jcmcの説明書
-必要なモジュールのインストール
+jcmc.pyの中身をつくっていきます。まずは必要なモジュールをインポートしておきます。
 ```python
 import requests
 import json
@@ -47,6 +47,35 @@ class JCMC:
     def __init__(self,name):
         self.oname = name
 ```
+ここまでで一度実行してみます。別のファイル (main.pyなど)をつくって、`class JCMC`を呼び出してみます。
+```python
+from jcmc import JCMC #ここでclass JCMCがjcmc.pyからインポートします。
+JCMC = JCMC('test.csv') #test.csvがclass JCMCの__init__で用意したnameに渡されてself.onameに格納されます。
+```
+ここでは何も起きないですが、先程作成した`class JCMC`を呼び出してtest.csvという名前を用意できました。試しに、新しい関数`def test`を作ってみましょう。
+```python
+class JCMC:
+    def __init__(self,name):
+        self.oname = name
+        
+    def test(self, data):
+        return data * 2 #引数dataを2倍した値を返します
+```
+ここでmain.pyに戻って、作成した`test`関数を使ってみます。
+```python
+from jcmc import JCMC 
+JCMC = JCMC('test.csv') 
+
+a = JCMC.test(2) #test関数のdataに2を渡します。返ってきた4 (2倍された数)がaに格納されます。
+print(a)
+
+b = JCMC.test(3) #test関数のdataに3を渡します。返ってきた6 (2倍された数)がbに格納されます。
+print(b)
+
+c = JCMC.test(2) * JCMC.test(3) 関数どうしの積をとることもできます
+print(c)
+```
+`test`関数と同じようにしてjcmcを関数として作っていくことで、mian.pyから呼び出して処理することができるようになります。`export`関数をつくって実際に出力してみましょう。
 `class JCMC`の続き
 ```pyhthon
     def call_temp(self,url): #URLから温度の情報をもってくる関数を定義
