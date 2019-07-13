@@ -42,7 +42,7 @@ class Color:
     REVERCE   = '\033[07m'
 ```
 JCMCクラスの作成を始めます。まず最初に、`class JCMC`を呼び出した時に一度だけ読み込まれる`__init__`を作っておきます。引数は`name`だけ要求しておき、これには保存するcsvの名前を入れておきましょう。
-```
+```python
 class JCMC:
     def __init__(self,name):
         self.oname = name
