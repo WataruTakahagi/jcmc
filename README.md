@@ -93,12 +93,19 @@ JCMC = JCMC('test.csv')
 JCMC.export('hydrothermal,vent')
 ```
 ```
-python main.py
+% python main.py
 https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=hydrothermal+vent
 ```
-このURLをコピーしてgoogleで見てみましょう。目的の検索結果のページが表示されていてば成功です。
+このURLをコピーしてgoogleで見てみましょう。目的の検索結果のページが表示されていてば成功です。生成したURLから、そのページのhtmlファイルを取得するプログラムを作っていきます。`urllib.request.urlopen(url)`を用いると簡単に書けます。続いて`BeautifulSoup()`で持ってきたhtmlを使いやすい形にパースします。
 ```python
-        parent = url.split('/')[0]+'//'+url.split('/')[2]
+class JCMC:
+    def __init__(self,name):
+        self.oname = name
+
+    def export(self,keyword):
+        keyword = keyword.replace(',','+') #検索できる形に変換
+        url = 'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=' + keyword #URLをつくる
+        parent = https://www.jcm.riken.jp #親URLを指定しておきます (今後つかいます)
         html = urllib.request.urlopen(url) #指定したURLからhtmlをもってくる
         soup = BeautifulSoup(html, 'html.parser')
         a = soup.find_all('a') #<a>タグで囲まれた部分の中身(JMC numberのURLが含まれる)を抜き出す
@@ -107,7 +114,25 @@ https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=hydrothermal+vent
             called = tag.get('href') #リンク先のURLのリストをもってくる
             if 'JCM=' in called:
                 url_list.append(parent+called)
+        print(url_list)
+        print(len(url_list)) #何個のURLが取得できたか確認する
+```      
+一気に書いてしまいました。まずはもってきたhtmlの中身を見てみましょう。
+```html
+<H1>Strain data</H1>
+Search for keyword=[hydrothermal vent].
 
+<HR>
+<FONT FACE="Arial,Helvetica"> <I>Thermococcus</I> <I>profundus</I></FONT><BR>
+JCM number: <a href="/cgi-bin/jcm/jcm_number?JCM=9378">9378</a> #これが目的のURL
+ &lt;--&nbsp;T. Kobayashi DT5432.<br>
+Source: <STRONG>Hydrothermal vent at the Mid-Okinawa Trough [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>]</STRONG>.<BR>
+Morphology: [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
+Biochemistry/Physiology: [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
+G+C (mol%): 52.5 (HPLC) [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
+```
+こんな感じに、`<a>`タグの中にリンク先のurlの情報が含まれていることがわかります。この中で、JCM番号にリンクされているものは全て`JMC=`の後にJMC番号がついている形をしたURLで共通しています。`if`文で`JMC=`が含まれるURLを全て`url_list`に追加していくことで、検索ワードで検索した結果のページからJCM番号へのリンクが含まれる全てのURLを取得することができました。何個のURLが取得できたか確認し、漏れなく取得できているか確認しておきましょう。
+```python
         text = soup.get_text().splitlines()
         name_list = []
         for i in range(len(text)):
