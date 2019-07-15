@@ -76,26 +76,21 @@ c = JCMC.test(2) * JCMC.test(3) #関数どうしの積をとることもでき�
 print(c)
 ```
 `test`関数と同じようにしてjcmcを関数として作っていくことで、mian.pyから呼び出して処理することができるようになります。`export`関数をつくって実際に出力してみましょう。
-`class JCMC`の続き
 ```pyhthon
-    def call_temp(self,url): #URLから温度の情報をもってくる関数を定義
-        html = urllib.request.urlopen(url)
-        data = BeautifulSoup(html, 'html.parser')
-        text = data.get_text().splitlines() #テキストデータに変換
-        for inf in text:
-            if 'Temperature:' in inf: #Temperatureが存在する部分を抜き出す
-                print(url,inf)
-                return inf
-                break
+class JCMC:
+    def __init__(self,name):
+        self.oname = name
 
     def export(self,keyword):
-        #keyword = input('search key : ') #検索キーワードを入力 (複数キーワードはカンマで)
         keyword = keyword.replace(',','+') #検索できる形に変換
         url = 'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=' + keyword #URLをつくる
         parent = url.split('/')[0]+'//'+url.split('/')[2]
         html = urllib.request.urlopen(url) #指定したURLからhtmlをもってくる
         soup = BeautifulSoup(html, 'html.parser')
+```
+`keyword = keyword.replace(',','+')`をなぜやるのかですが、
 
+```python
         a = soup.find_all('a') #<a>タグで囲まれた部分の中身(JMC numberのURLが含まれる)を抜き出す
         url_list = []
         for tag in a:
@@ -135,4 +130,15 @@ print(c)
                     apx = 'None.'
                 print(Color.CYAN+'Calling... '+Color.GREEN+spname+Color.END)
                 writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
+                
+                
+             def call_temp(self,url): #URLから温度の情報をもってくる関数を定義
+        html = urllib.request.urlopen(url)
+        data = BeautifulSoup(html, 'html.parser')
+        text = data.get_text().splitlines() #テキストデータに変換
+        for inf in text:
+            if 'Temperature:' in inf: #Temperatureが存在する部分を抜き出す
+                print(url,inf)
+                return inf
+                break
 ```
