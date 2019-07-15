@@ -368,3 +368,5 @@ JCMC.export('methane')
 os.system('Rscript vis.R')
 ```
 <img width="761" alt="スクリーンショット 2019-07-15 16 21 33" src="https://user-images.githubusercontent.com/7247018/61200516-a7581000-a71c-11e9-8ba0-b19f7a62c3d1.png">
+
+Rに渡さなくてもpythonにはseabornがあるじゃんと思ったそこのあなたへ
