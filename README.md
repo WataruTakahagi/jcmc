@@ -91,10 +91,12 @@ class JCMC:
 from jcmc import JCMC 
 JCMC = JCMC('test.csv') 
 JCMC.export('hydrothermal,vent')
+JCMC.export('hot,spring')
 ```
 ```
 % python main.py
 https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=hydrothermal+vent
+https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=hot+spring
 ```
 このURLをコピーしてgoogleで見てみましょう。目的の検索結果のページが表示されていてば成功です。生成したURLから、そのページのhtmlファイルを取得するプログラムを作っていきます。`urllib.request.urlopen(url)`を用いると簡単に書けます。続いて`BeautifulSoup()`で持ってきたhtmlを使いやすい形にパースします。
 ```python
@@ -132,6 +134,31 @@ Biochemistry/Physiology: [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
 G+C (mol%): 52.5 (HPLC) [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
 ```
 こんな感じに、`<a>`タグの中にリンク先のurlの情報が含まれていることがわかります。この中で、JCM番号にリンクされているものは全て`JMC=`の後にJMC番号がついている形をしたURLで共通しています。`if`文で`JMC=`が含まれるURLを全て`url_list`に追加していくことで、検索ワードで検索した結果のページからJCM番号へのリンクが含まれる全てのURLを取得することができました。何個のURLが取得できたか確認し、漏れなく取得できているか確認しておきましょう。
+このURLもコピーしてgoogleで見てみましょう。Temperatureなどの情報が含まれる個別のページが表示されれば成功です。このURLから温度情報を取得する関数を書いておきます。大人の事情で、`__init__`の次にこの関数を定義するようにプログラムを書き換えます。
+```python
+class JCMC:
+    def __init__(self,name):
+        self.oname = name
+        
+    def call_temp(self,url): #URLから温度の情報をもってくる関数を定義
+        html = urllib.request.urlopen(url)
+        data = BeautifulSoup(html, 'html.parser')
+        text = data.get_text().splitlines() #テキストデータに変換
+        for inf in text:
+            if 'Temperature:' in inf: #Temperatureが存在する部分を抜き出す
+                print(url,inf)
+                return inf
+                break
+                
+    def export(self,keyword):
+        #------以下略-----
+```
+main.pyに書き加えて確認してみます。
+```python
+from jcmc import JCMC 
+JCMC = JCMC('test.csv') 
+JCMC.call_temp('https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=9378')
+```
 次に、種名を取得するプログラムを作っていきます。
 ```python
 class JCMC:
@@ -145,7 +172,7 @@ class JCMC:
 ```
 ['', '', '', 'Strain data', '', '', '', '', '', '', '', '', '', '  window.dataLayer = window.dataLayer || [];', '  function gtag(){dataLayer.push(arguments);}', "  gtag('js', new Date());", "  gtag('config', 'UA-49139209-3');", '', 'Strain data', 'Search for keyword=[hydrothermal vent].', '', '', ' Thermococcus profundus', 'JCM number: 9378', ' <--\xa0T. Kobayashi DT5432.', 'Source: Hydrothermal vent at the Mid-Okinawa Trough [3633].', 'Morphology: [3633].', 'Biochemistry/Physiology: [3633].', 'G+C (mol%): 52.5 (HPLC) [3633].', 'Phylogeny: 16S rRNA gene (AY099184), 16S rRNA gene & ITS & 23S rRNA gene (Z75233) [3633].', 'Other taxonomic data: Polyamine [4098].', 'Genome sequence: CP014862, CP014863 (plasmid).', 'Production: Extracellular amylase [3728].', '', 'Publication(s) using this strain [B04029, A04053, A04193, B05123, B07136].', 'Delivery category: Domestic, B; Overseas, B.', 'Viability and purity assays of this product were performed at the time of production as part of quality control. The authenticity of the culture was confirmed by analyzing an appropriate gene sequence, e.g., the 16S rRNA gene for prokaryotes, the D1/D2 region of LSU rRNA gene, the ITS region of the nuclear rRNA operon, etc. for eukaryotes. The characteristics and/or functions of the strain appearing in the catalogue are based on information from the corresponding literature and JCM does not guarantee them.', '', ' Thermococcus peptonophilus', 'JCM number: 9653', ' <--\xa0C. Kato; JAMSTEC, Japan; OG1.', 'Source: Deep-sea hydrothermal vent in the western Paciffic Ocean [3908].', 'Morphology: [3908].', 'Biochemistry/Physiology: [3908,4244].', 'G+C (mol%): 52 (HPLC) [3908].', 'DNA-DNA relatedness: [3908].', 'Phylogeny: 16S rRNA gene (D37982) [3908], 16S rRNA gene (AB055125).', 'Other taxonomic data: Polyamine [4204].', 'Genome sequence: CP014750, CP014751 (plasmid).', 'More information: Culturability [4150].', 'Genomic DNA is available from RIKEN BRC-DNA Bank:', 'JGD 12568.', '', 'Publication(s) using this strain [B04029, A04193, A05044, B05123, B07136].', 'Delivery category: Domestic, B; Overseas, B.', 'Viability and purity assays of this product were performed at the time of production as part of quality control but note that the authenticity has not yet been checked by gene sequencing. The characteristics and/or functions of the strain appearing in the catalogue are based on information from the corresponding literature and JCM does not guarantee them.', '', ' Thermococcus peptonophilus', 'JCM number: 9654', ' <--\xa0C. Kato; JAMSTEC, Japan; SM2.', 'Source: Deep-sea hydrothermal vent in the western Paciffic Ocean [3908].', 'Morphology: [3908].', 'Biochemistry/Physiology: [3908].', 'G+C (mol%): 52 (HPLC) [3908].', 'DNA-DNA relatedness: [3908].', 'Phylogeny: 16S rRNA gene (D37983) [3908].', '', 'Publication(s) using this strain [A05044].', 'Delivery category: Domestic, B; Overseas, B.', 'Viability and purity assays of this product were performed at the time of production as part of quality control but note that the authenticity has not yet been checked by gene sequencing. The characteristics and/or functions of the strain appearing in the catalogue are based on information from the corresponding literature and JCM does not guarantee them.', '', ' Rhodothermus marinus', 'JCM number: 9785',
 ```
-`soup.get_text()`でhtmlからテキストを抽出でき、`splielines()`で1行ずつリストに加えることができます。取得したテキスト一覧を見てみると、種名は必ず`JMC number:`の1つ前に存在しているという法則が見えてきます (ここらへんは経験)。したがってテキストを`for`文で回しつつ、`JCM number:`が現れたら1つ前のテキストを`name_list`に加えるというプログラムを書きます。
+`soup.get_text()`でhtmlからテキストを抽出でき、`splitlines()`で1行ずつリストに加えることができます。取得したテキスト一覧を見てみると、種名は必ず`JMC number:`の1つ前に存在しているという法則が見えてきます (ここらへんは経験)。したがってテキストを`for`文で回しつつ、`JCM number:`が現れたら1つ前のテキストを`name_list`に加えるというプログラムを書きます。
 ```python
 class JCMC:
     def export(self,keyword):
@@ -190,13 +217,5 @@ class JCMC:
                 writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
                 
                 
-             def call_temp(self,url): #URLから温度の情報をもってくる関数を定義
-        html = urllib.request.urlopen(url)
-        data = BeautifulSoup(html, 'html.parser')
-        text = data.get_text().splitlines() #テキストデータに変換
-        for inf in text:
-            if 'Temperature:' in inf: #Temperatureが存在する部分を抜き出す
-                print(url,inf)
-                return inf
-                break
+             
 ```
