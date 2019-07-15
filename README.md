@@ -313,7 +313,7 @@ class JCMC:
         text = soup.get_text().splitlines()
         name_list = []
         for i in range(len(text)):
-            if 'JCM number' in text[i]:
+            if 'JCM number:' in text[i]:
                 name_list.append(text[i-1]) #賢いやり方かは怪しいが。
 
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
