@@ -157,11 +157,20 @@ main.pyに書き加えて確認してみます。
 ```python
 from jcmc import JCMC 
 JCMC = JCMC('test.csv') 
-JCMC.call_temp('https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=9378')
+tmp = JCMC.call_temp('https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=9378')
+print(tmp)
 ```
-次に、種名を取得するプログラムを作っていきます。
+```
+https://www.jcm.riken.jp/cgi-bin/jcm/jcm_number?JCM=9378 Temperature: 80°C; Anaerobic.
+Temperature: 80°C; Anaerobic.
+```
+`call_temp`の中で`print`された情報と、`return`されてmain.pyでtmpに保存されて`print`された情報が2つ出力されていれば成功です。
+次に、`def export()`に戻って、種名を取得するプログラムを作っていきます。
 ```python
 class JCMC:
+        
+        #-----中略-----
+
     def export(self,keyword):
     
         #-----中略-----
@@ -188,6 +197,11 @@ class JCMC:
         print(len(name_list))
 ```
 何種類の種名を取得できたかも確認しておきます。先程取得したURLの個数と一致していれば大丈夫そうという予測を立てます。
+ここまでで、
+- 検索ワードからURLを作成して検索する
+- JCM番号が含まれるリンク先から温度情報を取得する
+- JCM番号に対応した種名を取得する
+の3点を実装できたので、最後にこれらを1つのcsvファイルに書き込むプログラムを作成すれば完了です。
 ```python
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
