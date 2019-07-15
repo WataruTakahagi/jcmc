@@ -343,3 +343,29 @@ class JCMC:
                 print(Color.CYAN+'Calling... '+Color.GREEN+spname+Color.END)
                 writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
 ```
+簡単なRスクリプトを用意して可視化してみましょう。ヒストグラムを描きます。
+```R
+library(ggplot2)
+
+rawdata <-  read.csv("output.csv",header=T)
+
+ggplot(rawdata,aes(x=Temperature,fill=Keyword))+
+      geom_histogram(position="dodge")
+      geom_density()
+```
+main.pyを次のように編集することで、まとめて処理できます。
+```python
+from jcmc import JCMC
+import os
+
+JCMC = JCMC('output.csv')
+
+#4つの検索ワードを調査してみる
+JCMC.export('hydrothermal')
+JCMC.export('hot,spring')
+JCMC.export('seawater')
+JCMC.export('methane')
+
+#横軸に生息温度をとり、検索ワードで色分けしてヒストグラムを描く
+os.system('Rscript vis.R')
+```
