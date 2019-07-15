@@ -351,7 +351,6 @@ rawdata <-  read.csv("output.csv",header=T)
 
 ggplot(rawdata,aes(x=Temperature,fill=Keyword))+
       geom_histogram(position="dodge")
-      geom_density()
 ```
 main.pyを次のように編集することで、まとめて処理できます。
 ```python
@@ -360,12 +359,12 @@ import os
 
 JCMC = JCMC('output.csv')
 
-#4つの検索ワードを調査してみる
+#3つの検索ワードを調査してみる
 JCMC.export('hydrothermal')
 JCMC.export('hot,spring')
-JCMC.export('seawater')
 JCMC.export('methane')
 
 #横軸に生息温度をとり、検索ワードで色分けしてヒストグラムを描く
 os.system('Rscript vis.R')
 ```
+<img width="761" alt="スクリーンショット 2019-07-15 16 21 33" src="https://user-images.githubusercontent.com/7247018/61200516-a7581000-a71c-11e9-8ba0-b19f7a62c3d1.png">
