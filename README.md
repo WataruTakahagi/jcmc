@@ -420,3 +420,4 @@ keywords= ['hydrothermal','hot,spring','methane']
 [JCMC.export(i) for i in keywords]
 JCMC.summary(keywords)
 ```
+![output](https://user-images.githubusercontent.com/7247018/61204552-6fef6080-a728-11e9-8d06-e77d942f4b4e.png)
