@@ -10,6 +10,9 @@ import os
 import urllib
 import csv
 import pprint
+import seaborn as sns
+import matplotlib.pyplot as plt
+import matplotlib.gridspec as gridspec
 
 class Color:
     CYAN  = '\033[36m'
@@ -77,3 +80,19 @@ class JCMC:
                     apx = 'None.'
                 print(Color.CYAN+'Calling... '+Color.GREEN+spname+Color.END)
                 writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
+
+    def summary(self,keywords):
+        data,cpalette = pd.read_csv(self.oname),'Dark2'
+        print(data)
+        sns.set(palette=cpalette);cmap = plt.get_cmap(cpalette);plt.figure(figsize=(14, 9))
+        gs = gridspec.GridSpec(nrows=len(keywords),ncols=3,hspace=0.3)
+        for i in range(len(keywords)):
+            plt.subplot(gs[i, 0])
+            sns.distplot(data[data["Keyword"]==keywords[i].replace(',','+')].Temperature,kde=True,rug=True,color=cmap(i))
+            plt.title(keywords[i].replace(',','+'))
+            plt.xlabel('')
+            plt.xlim(0,data.Temperature.max()+10)
+        plt.subplot(gs[:, 1]);sns.boxplot(x="Keyword", y="Temperature", data=data)
+        plt.subplot(gs[:, 2]);sns.swarmplot(x="Keyword", y="Temperature", data=data)
+        plt.savefig(self.oname.replace('csv','png'))
+        os.system('open '+self.oname.replace('csv','png'))
