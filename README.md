@@ -105,7 +105,7 @@ class JCMC:
     def export(self,keyword):
         keyword = keyword.replace(',','+') #検索できる形に変換
         url = 'https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=' + keyword #URLをつくる
-        parent = https://www.jcm.riken.jp #親URLを指定しておきます (今後つかいます)
+        parent = 'https://www.jcm.riken.jp' #親URLを指定しておきます (今後つかいます)
         html = urllib.request.urlopen(url) #指定したURLからhtmlをもってくる
         soup = BeautifulSoup(html, 'html.parser')
         a = soup.find_all('a') #<a>タグで囲まれた部分の中身(JMC numberのURLが含まれる)を抜き出す
@@ -132,13 +132,36 @@ Biochemistry/Physiology: [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
 G+C (mol%): 52.5 (HPLC) [<a href="/cgi-bin/jcm/jcm_ref?REF=3633">3633</a>].<BR>
 ```
 こんな感じに、`<a>`タグの中にリンク先のurlの情報が含まれていることがわかります。この中で、JCM番号にリンクされているものは全て`JMC=`の後にJMC番号がついている形をしたURLで共通しています。`if`文で`JMC=`が含まれるURLを全て`url_list`に追加していくことで、検索ワードで検索した結果のページからJCM番号へのリンクが含まれる全てのURLを取得することができました。何個のURLが取得できたか確認し、漏れなく取得できているか確認しておきましょう。
+次に、種名を取得するプログラムを作っていきます。
 ```python
+class JCMC:
+    def export(self,keyword):
+    
+        #-----中略-----
+        
+        text = soup.get_text().splitlines()
+        print(text)
+```
+```
+['', '', '', 'Strain data', '', '', '', '', '', '', '', '', '', '  window.dataLayer = window.dataLayer || [];', '  function gtag(){dataLayer.push(arguments);}', "  gtag('js', new Date());", "  gtag('config', 'UA-49139209-3');", '', 'Strain data', 'Search for keyword=[hydrothermal vent].', '', '', ' Thermococcus profundus', 'JCM number: 9378', ' <--\xa0T. Kobayashi DT5432.', 'Source: Hydrothermal vent at the Mid-Okinawa Trough [3633].', 'Morphology: [3633].', 'Biochemistry/Physiology: [3633].', 'G+C (mol%): 52.5 (HPLC) [3633].', 'Phylogeny: 16S rRNA gene (AY099184), 16S rRNA gene & ITS & 23S rRNA gene (Z75233) [3633].', 'Other taxonomic data: Polyamine [4098].', 'Genome sequence: CP014862, CP014863 (plasmid).', 'Production: Extracellular amylase [3728].', '', 'Publication(s) using this strain [B04029, A04053, A04193, B05123, B07136].', 'Delivery category: Domestic, B; Overseas, B.', 'Viability and purity assays of this product were performed at the time of production as part of quality control. The authenticity of the culture was confirmed by analyzing an appropriate gene sequence, e.g., the 16S rRNA gene for prokaryotes, the D1/D2 region of LSU rRNA gene, the ITS region of the nuclear rRNA operon, etc. for eukaryotes. The characteristics and/or functions of the strain appearing in the catalogue are based on information from the corresponding literature and JCM does not guarantee them.', '', ' Thermococcus peptonophilus', 'JCM number: 9653', ' <--\xa0C. Kato; JAMSTEC, Japan; OG1.', 'Source: Deep-sea hydrothermal vent in the western Paciffic Ocean [3908].', 'Morphology: [3908].', 'Biochemistry/Physiology: [3908,4244].', 'G+C (mol%): 52 (HPLC) [3908].', 'DNA-DNA relatedness: [3908].', 'Phylogeny: 16S rRNA gene (D37982) [3908], 16S rRNA gene (AB055125).', 'Other taxonomic data: Polyamine [4204].', 'Genome sequence: CP014750, CP014751 (plasmid).', 'More information: Culturability [4150].', 'Genomic DNA is available from RIKEN BRC-DNA Bank:', 'JGD 12568.', '', 'Publication(s) using this strain [B04029, A04193, A05044, B05123, B07136].', 'Delivery category: Domestic, B; Overseas, B.', 'Viability and purity assays of this product were performed at the time of production as part of quality control but note that the authenticity has not yet been checked by gene sequencing. The characteristics and/or functions of the strain appearing in the catalogue are based on information from the corresponding literature and JCM does not guarantee them.', '', ' Thermococcus peptonophilus', 'JCM number: 9654', ' <--\xa0C. Kato; JAMSTEC, Japan; SM2.', 'Source: Deep-sea hydrothermal vent in the western Paciffic Ocean [3908].', 'Morphology: [3908].', 'Biochemistry/Physiology: [3908].', 'G+C (mol%): 52 (HPLC) [3908].', 'DNA-DNA relatedness: [3908].', 'Phylogeny: 16S rRNA gene (D37983) [3908].', '', 'Publication(s) using this strain [A05044].', 'Delivery category: Domestic, B; Overseas, B.', 'Viability and purity assays of this product were performed at the time of production as part of quality control but note that the authenticity has not yet been checked by gene sequencing. The characteristics and/or functions of the strain appearing in the catalogue are based on information from the corresponding literature and JCM does not guarantee them.', '', ' Rhodothermus marinus', 'JCM number: 9785',
+```
+`soup.get_text()`でhtmlからテキストを抽出でき、`splielines()`で1行ずつリストに加えることができます。取得したテキスト一覧を見てみると、種名は必ず`JMC number:`の1つ前に存在しているという法則が見えてきます (ここらへんは経験)。したがってテキストを`for`文で回しつつ、`JCM number:`が現れたら1つ前のテキストを`name_list`に加えるというプログラムを書きます。
+```python
+class JCMC:
+    def export(self,keyword):
+    
+        #-----中略-----
+        
         text = soup.get_text().splitlines()
         name_list = []
         for i in range(len(text)):
-            if 'JCM number' in text[i]:
-                name_list.append(text[i-1]) #賢いやり方かは怪しいが。
-
+            if 'JCM number:' in text[i]:
+                name_list.append(text[i-1]) 
+        print(name_list)
+        print(len(name_list))
+```
+何種類の種名を取得できたかも確認しておきます。先程取得したURLの個数と一致していれば大丈夫そうという予測を立てます。
+```python
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
             k2 = 'Speceis'
