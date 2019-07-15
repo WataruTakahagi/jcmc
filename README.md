@@ -369,30 +369,54 @@ os.system('Rscript vis.R')
 ```
 <img width="761" alt="スクリーンショット 2019-07-15 16 21 33" src="https://user-images.githubusercontent.com/7247018/61200516-a7581000-a71c-11e9-8ba0-b19f7a62c3d1.png">
 
-Rに渡さなくてもpythonにはseabornがあるじゃんと思ったそこのあなたへ
+Rに渡さなくてもpythonにはseabornがあるじゃんと思ったそこのあなた! 新しい関数`summary`を作ってみましょう。インポートするモジュールが増えているので注意。
 ```python
-from jcmc import JCMC
-import os
+from selenium import webdriver
+import time
+import requests
+import json
+from bs4 import BeautifulSoup
 import pandas as pd
+import sys
+import time
+import os
+import urllib
+import csv
+import pprint
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 
-filename = 'output.csv'; JCMC = JCMC('output.csv')
+#-----中略-----
+
+class JCMC:
+    def __init__(self,name):
+        self.oname = name
+    
+    #-----中略-----
+        
+    def summary(self,keywords):
+        data,cpalette = pd.read_csv(self.oname),'Dark2'
+        print(data)
+        sns.set(palette=cpalette);cmap = plt.get_cmap(cpalette);plt.figure(figsize=(14, 9))
+        gs = gridspec.GridSpec(nrows=len(keywords),ncols=3,hspace=0.3)
+        for i in range(len(keywords)):
+            plt.subplot(gs[i, 0])
+            sns.distplot(data[data["Keyword"]==keywords[i].replace(',','+')].Temperature,kde=True,rug=True,color=cmap(i))
+            plt.title(keywords[i].replace(',','+'))
+            plt.xlabel('')
+            plt.xlim(0,data.Temperature.max()+10)
+        plt.subplot(gs[:, 1]);sns.boxplot(x="Keyword", y="Temperature", data=data)
+        plt.subplot(gs[:, 2]);sns.swarmplot(x="Keyword", y="Temperature", data=data)
+        plt.savefig(self.oname.replace('csv','png'))
+        os.system('open '+self.oname.replace('csv','png'))
+```
+そしてmain.pyを次のように書き換える。
+```python
+from jcmc import JCMC
+
+JCMC = JCMC('output.csv')
 keywords= ['hydrothermal','hot,spring','methane']
 [JCMC.export(i) for i in keywords]
-
-data,cpalette = pd.read_csv(filename),'Dark2'
-sns.set(palette=cpalette);cmap = plt.get_cmap(cpalette);plt.figure(figsize=(14, 9))
-gs = gridspec.GridSpec(nrows=len(keywords),ncols=3,hspace=0.3)
-for i in range(len(keywords)):
-    plt.subplot(gs[i, 0])
-    sns.distplot(data[data["Keyword"]==keywords[i].replace(',','+')].Temperature,kde=True,rug=True,color=cmap(i))
-    plt.title(keywords[i].replace(',','+'))
-    plt.xlabel('')
-    plt.xlim(0,data.Temperature.max()+10)
-plt.subplot(gs[:, 1]);sns.boxplot(x="Keyword", y="Temperature", data=data)
-plt.subplot(gs[:, 2]);sns.swarmplot(x="Keyword", y="Temperature", data=data)
-plt.savefig(filename.replace('csv','png'))
-os.system('open '+filename.replace('csv','png'))
+JCMC.summary(keywords)
 ```
