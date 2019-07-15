@@ -72,7 +72,7 @@ print(a)
 b = JCMC.test(3) #test関数のdataに3を渡します。返ってきた6 (2倍された数)がbに格納されます。
 print(b)
 
-c = JCMC.test(2) * JCMC.test(3) 関数どうしの積をとることもできます
+c = JCMC.test(2) * JCMC.test(3) #関数どうしの積をとることもできます
 print(c)
 ```
 `test`関数と同じようにしてjcmcを関数として作っていくことで、mian.pyから呼び出して処理することができるようになります。`export`関数をつくって実際に出力してみましょう。
