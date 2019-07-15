@@ -421,3 +421,6 @@ keywords= ['hydrothermal','hot,spring','methane']
 JCMC.summary(keywords)
 ```
 ![output](https://user-images.githubusercontent.com/7247018/61204552-6fef6080-a728-11e9-8d06-e77d942f4b4e.png)
+
+注意点
+- 同じJCM番号を持つ種を区別できません。例えばhydrothermalとhot springで同じJCM番号が割り振られた種が検索された場合、情報が重複します。
