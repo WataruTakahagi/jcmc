@@ -235,7 +235,7 @@ main.pyを書き直して確認してみます。
 ```python
 from jcmc import JCMC 
 JCMC = JCMC('hydrothermal') 
-JCMC = JCMC(`hot,spring') 
+JCMC = JCMC('hot,spring') 
 ```
 ここまでで十分使えるプログラムですが、例えば上のように2つ以上の処理が続くとヘッダーが複数書き込まれてしまうことがわかります。これを回避するために、csvファイルの中身が空のときだけヘッダーを書き込むという処理を追加します。これにより、2つ以上の処理を行っても1つのcsvファイルに情報が保存され、この後に行う処理も行いやすくなります。
 ```python
