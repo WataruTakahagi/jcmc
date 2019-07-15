@@ -411,7 +411,7 @@ class JCMC:
         plt.savefig(self.oname.replace('csv','png'))
         os.system('open '+self.oname.replace('csv','png'))
 ```
-そしてmain.pyを次のように書き換える。
+そしてmain.pyを次のように書き換えます。
 ```python
 from jcmc import JCMC
 
