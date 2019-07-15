@@ -343,7 +343,7 @@ class JCMC:
                 print(Color.CYAN+'Calling... '+Color.GREEN+spname+Color.END)
                 writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
 ```
-簡単なRスクリプトを用意して可視化してみましょう。ヒストグラムを描きます。
+簡単なRスクリプト (vis.R)を用意して可視化してみましょう。ヒストグラムを描きます。
 ```R
 library(ggplot2)
 
