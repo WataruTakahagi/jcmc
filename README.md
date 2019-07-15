@@ -369,7 +369,7 @@ os.system('Rscript vis.R')
 ```
 <img width="761" alt="スクリーンショット 2019-07-15 16 21 33" src="https://user-images.githubusercontent.com/7247018/61200516-a7581000-a71c-11e9-8ba0-b19f7a62c3d1.png">
 
-Rに渡さなくてもpythonにはseabornがあるじゃんと思ったそこのあなた! 新しい関数`summary`を作ってみましょう。インポートするモジュールが増えているので注意。
+Rに渡さなくてもpythonにはseabornがあるじゃんと思いました。新しい関数`summary`を作ってみましょう。インポートするモジュールが増えているので注意。
 ```python
 from selenium import webdriver
 import time
