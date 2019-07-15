@@ -201,8 +201,13 @@ class JCMC:
 - 検索ワードからURLを作成して検索する
 - JCM番号が含まれるリンク先から温度情報を取得する
 - JCM番号に対応した種名を取得する
-の3点を実装できたので、最後にこれらを1つのcsvファイルに書き込むプログラムを作成すれば完了です。
+
+の3点を実装できたので、最後にこれらを1つのcsvファイルに書き込むプログラムを作成すれば完了です。途中`.replace('\xa0', '')`という見慣れない処理をしていますが、これは`shift_jis`でExcelに書き込む際のエラーを回避するための処理です。
 ```python
+    def export(self,keyword):
+    
+        #-----中略-----
+        
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
             k2 = 'Speceis'
@@ -210,16 +215,12 @@ class JCMC:
             k4 = 'URL'
             k5 = 'Temperature'
             k6 = 'Information'
-            filecheck = 0
-            with open(self.oname, 'r', encoding='shift_jis') as c:
-                if len([i for i in c.readlines()]) > 0:
-                    filecheck = 1
+            #k1~k6の6つの情報を書き込みます。
             fieldnames = [k1,k2,k3,k4,k5,k6]
             writer = csv.DictWriter(f, fieldnames=fieldnames)
-            if filecheck == 0: writer.writeheader() #fileが空のときだけheaderを書き込む
-            for line in url_list:
+            for line in url_list: #先程作成したurl_listから1つずつ処理していきます。
                 ind = url_list.index(line)
-                info = self.call_temp(line)
+                info = self.call_temp(line) #urlから温度を取得する関数はここで用います。
                 spname = name_list[ind].replace('\xa0', '').replace('"','')
                 JCMnumber = line.split('=')[1]
                 tmp = float(info.split('°C')[0].split(':')[1])
@@ -229,7 +230,34 @@ class JCMC:
                     apx = 'None.'
                 print(Color.CYAN+'Calling... '+Color.GREEN+spname+Color.END)
                 writer.writerow({k1:keyword,k2:spname,k3:JCMnumber,k4:line,k5:tmp,k6:apx}) #csvに書き込み
-                
-                
-             
+```
+main.pyを書き直して確認してみます。
+```python
+from jcmc import JCMC 
+JCMC = JCMC('hydrothermal') 
+JCMC = JCMC(`hot,spring') 
+```
+ここまでで十分使えるプログラムですが、例えば上のように2つ以上の処理が続くとヘッダーが複数書き込まれてしまうことがわかります。これを回避するために、csvファイルの中身が空のときだけヘッダーを書き込むという処理を追加します。これにより、2つ以上の処理を行っても1つのcsvファイルに情報が保存され、この後に行う処理も行いやすくなります。
+```python
+    def export(self,keyword):
+    
+        #-----中略-----
+        
+        with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
+            k1 = 'Keyword'
+            k2 = 'Speceis'
+            k3 = 'JCM number'
+            k4 = 'URL'
+            k5 = 'Temperature'
+            k6 = 'Information'
+            #k1~k6の6つの情報を書き込みます。
+            filecheck = 0
+            with open(self.oname, 'r', encoding='shift_jis') as c:
+                if len([i for i in c.readlines()]) > 0:
+                    filecheck = 1
+            fieldnames = [k1,k2,k3,k4,k5,k6]
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            if filecheck == 0: writer.writeheader() #fileが空のときだけheaderを書き込む
+            for line in url_list:
+            #-----以下略-----   
 ```
