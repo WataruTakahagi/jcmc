@@ -11,7 +11,7 @@ JCMC = JCMC('output.csv') #出力ファイル名を決めておきます
 JCMC.export('hydrothermal')
 JCMC.export('hot,spring') #複数キーワードはカンマで区切る
 ```
-# jcmcの説明書
+# jcmcの説明書&つくりかた
 jcmc.pyの中身をつくっていきます。まずは必要なモジュールをインポートしておきます。
 ```python
 import requests
