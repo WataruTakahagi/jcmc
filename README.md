@@ -76,7 +76,7 @@ c = JCMC.test(2) * JCMC.test(3) #関数どうしの積をとることもでき�
 print(c)
 ```
 `test`関数と同じようにしてjcmcを関数として作っていくことで、mian.pyから呼び出して処理することができるようになります。`export`関数をつくって実際に出力してみましょう。
-```pyhthon
+```python
 class JCMC:
     def __init__(self,name):
         self.oname = name
@@ -88,7 +88,7 @@ class JCMC:
         html = urllib.request.urlopen(url) #指定したURLからhtmlをもってくる
         soup = BeautifulSoup(html, 'html.parser')
 ```
-`keyword = keyword.replace(',','+')`をなぜやるのかですが、
+`keyword = keyword.replace(',','+')`をなぜやるのかですが、例えば"hydrothermal vent"をJCMで検索すると、検索結果のURLは`https://www.jcm.riken.jp/cgi-bin/jcm/jcm_kojin?ANY=hydrothermal+vent`となっていました。ここから、2つ以上の単語でつくられた語句で検索すると`+`で繋がれて検索にかけられることがわかります。スペースはやや扱いにくいので、このソフトウェアでは2つ以上の単語はカンマで区切る方式をとります。`keyword`には検索したい1つの単語またはカンマで区切られた2つ以上の単語が渡されているので、`keyword = keyword.replace(',','+')`で処理することでとりあえず検索キーワードを準備することができました。
 
 ```python
         a = soup.find_all('a') #<a>タグで囲まれた部分の中身(JMC numberのURLが含まれる)を抜き出す
