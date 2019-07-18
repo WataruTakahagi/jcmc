@@ -210,7 +210,7 @@ class JCMC:
         
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
@@ -245,7 +245,7 @@ JCMC.export('hydrothermal,vent')
         
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
@@ -318,7 +318,7 @@ class JCMC:
 
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
@@ -347,7 +347,7 @@ class JCMC:
 ```R
 library(ggplot2)
 
-rawdata <-  read.csv("output.csv",header=T)
+rawdata <- read.csv("output.csv",header=T)
 
 ggplot(rawdata,aes(x=Temperature,fill=Keyword))+
       geom_histogram(position="dodge")
