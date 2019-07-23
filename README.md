@@ -210,7 +210,7 @@ class JCMC:
         
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
@@ -234,8 +234,8 @@ class JCMC:
 main.pyを書き直して確認してみます。
 ```python
 from jcmc import JCMC 
-JCMC = JCMC('hydrothermal') 
-JCMC = JCMC('hot,spring') 
+JCMC = JCMC('test.csv') 
+JCMC.export('hydrothermal,vent') 
 ```
 ここまでで十分使えるプログラムですが、例えば上のように2つ以上の処理が続くとヘッダーが複数書き込まれてしまうことがわかります。これを回避するために、csvファイルの中身が空のときだけヘッダーを書き込むという処理を追加します。これにより、2つ以上の処理を行っても1つのcsvファイルに情報が保存され、この後に行う処理も行いやすくなります。
 ```python
@@ -245,7 +245,7 @@ JCMC = JCMC('hot,spring')
         
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
@@ -318,7 +318,7 @@ class JCMC:
 
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
@@ -347,7 +347,7 @@ class JCMC:
 ```R
 library(ggplot2)
 
-rawdata <-  read.csv("output.csv",header=T)
+rawdata <- read.csv("output.csv",header=T)
 
 ggplot(rawdata,aes(x=Temperature,fill=Keyword))+
       geom_histogram(position="dodge")

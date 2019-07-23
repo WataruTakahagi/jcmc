@@ -65,7 +65,7 @@ class JCMC:
 
         with open(self.oname, 'a', encoding='shift_jis') as f: #'a'を指定すると追記できる (ファイルがない場合は新規)
             k1 = 'Keyword'
-            k2 = 'Speceis'
+            k2 = 'Species'
             k3 = 'JCM number'
             k4 = 'URL'
             k5 = 'Temperature'
